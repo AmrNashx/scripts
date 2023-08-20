@@ -10,24 +10,31 @@ const client = new MongoClient(devURI);
 const ItemsCol = client.db("botitdev").collection("Items");
 
 const updates = [];
+let counter = 0;
 for (const change of changes) {
-  const item = await ItemsCol.findOne({ refId: Number(change.A) });
-  if (!item) continue;
-
   updates.push({
     updateOne: {
       filter: { refId: Number(change.A), "variants.price": { $exists: true } },
       update: {
         $set: {
           "variants.$.price": change.E,
-          "variants.$.inventory.$.inStock": true,
-          "variants.$.inventory.$.branchId": change.C,
+          "variants.$.inventory.0.inStock": true,
+          "variants.$.inventory.0.branchId": change.C,
         },
       },
     },
   });
+  console.log(`Updated Item number ${++counter}`);
 }
 
-const res = await ItemsCol.bulkWrite(updates);
+let res;
+try {
+  console.log("Writing To Database...");
+  res = await ItemsCol.bulkWrite(updates);
+  console.log("Done");
+} catch (error) {
+  console.error(error);
+}
 console.log(res);
+
 client.close();
