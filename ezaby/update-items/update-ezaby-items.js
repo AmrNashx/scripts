@@ -14,11 +14,12 @@ let counter = 0;
 for (const change of changes) {
   updates.push({
     updateOne: {
-      filter: { refId: Number(change.A), "variants.price": { $exists: true } },
+      filter: { refId: Number(change.A) },
       update: {
         $set: {
           "variants.$.price": change.E,
-          "variants.$.inventory.0.inStock": true,
+          "variants.$.inventory.0.stock_quantity": change.D,
+          "variants.$.inventory.0.inStock": change.D > 0,
           "variants.$.inventory.0.branchId": change.C,
         },
       },
