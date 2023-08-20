@@ -1,6 +1,7 @@
 {
   "type": "module",
   "dependencies": {
-    "convert-excel-to-json": "^1.7.0"
+    "convert-excel-to-json": "^1.7.0",
+    "mongodb": "^5.7.0"
   }
 }
