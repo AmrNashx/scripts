@@ -1,0 +1,6 @@
+
+## How to run?
+
+1. Add the Excel sheets in excel-sheets directory.
+2. Run getItemsData helper.
+3. After preparing data run the main index.js file.
