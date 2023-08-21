@@ -1,5 +1,8 @@
 {
   "type": "module",
+  "scripts": {
+    "update:ezaby": "node ezaby/update-items/index.js"
+  },
   "dependencies": {
     "convert-excel-to-json": "^1.7.0",
     "mongodb": "^5.7.0"

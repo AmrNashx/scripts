@@ -1,5 +1,5 @@
 import fs from "fs/promises";
-import { MongoClient } from "mongodb";
+import { MongoClient, ObjectId } from "mongodb";
 import path from "path";
 
 const changesJSON = await fs.readFile(
@@ -12,6 +12,8 @@ const devURI =
   "mongodb+srv://devdb:UDBoHHLHrhjvyMnY@botit-dev.jwtve.mongodb.net/botitdev?retryWrites=true&w=majority";
 const client = new MongoClient(devURI);
 const ItemsCol = client.db("botitdev").collection("Items");
+const VendorsCol = client.db("botitdev").collection("Vendors");
+const vendorId = (await VendorsCol.findOne({ "name.en": /ezaby/i }))._id;
 
 const updates = [];
 let counter = 0;
@@ -19,15 +21,20 @@ for (const change of changes) {
   updates.push({
     updateOne: {
       filter: {
+        _vendor: vendorId,
         refId: Number(change.A),
-        "variants.inventory": { $exists: true },
+        "variants.price": { $exists: true },
       },
       update: {
         $set: {
           "variants.$.price": change.E,
-          "variants.$.inventory.0.stock_quantity": change.D,
-          "variants.$.inventory.0.inStock": change.D > 0,
-          "variants.$.inventory.0.branchId": change.C,
+        },
+        $push: {
+          "variants.$.inventory": {
+            stock_quantity: change.D,
+            inStock: change.D,
+            branchId: change.C,
+          },
         },
       },
     },
