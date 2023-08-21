@@ -1,7 +1,11 @@
 import fs from "fs/promises";
 import { MongoClient } from "mongodb";
+import path from "path";
 
-const changesJSON = await fs.readFile("./total-items-data.json", "utf-8");
+const changesJSON = await fs.readFile(
+  path.resolve("ezaby", "update-items", "total-items-data.json"),
+  "utf-8"
+);
 const changes = JSON.parse(changesJSON);
 
 const devURI =
@@ -14,7 +18,10 @@ let counter = 0;
 for (const change of changes) {
   updates.push({
     updateOne: {
-      filter: { refId: Number(change.A) },
+      filter: {
+        refId: Number(change.A),
+        "variants.inventory": { $exists: true },
+      },
       update: {
         $set: {
           "variants.$.price": change.E,
