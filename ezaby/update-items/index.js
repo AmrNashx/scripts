@@ -1,5 +1,5 @@
 import fs from "fs/promises";
-import { MongoClient, ObjectId } from "mongodb";
+import { MongoClient } from "mongodb";
 import path from "path";
 
 const changesJSON = await fs.readFile(
@@ -28,11 +28,12 @@ for (const change of changes) {
       update: {
         $set: {
           "variants.$.price": change.E,
+          images: [],
         },
         $push: {
           "variants.$.inventory": {
             stock_quantity: change.D,
-            inStock: change.D,
+            inStock: change.D > 0,
             branchId: change.C,
           },
         },
