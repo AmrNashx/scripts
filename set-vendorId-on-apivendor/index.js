@@ -14,6 +14,7 @@ function getApiVendorsWithNoVendorId() {
 async function getVendorIdOfApiVendor(apiVendor) {
   const regex = new RegExp(apiVendor.vendor, "i");
   const vendor = await vendorCol.findOne({ "name.en": regex });
+  console.log(regex);
   return vendor ? vendor._id : null;
 }
 
@@ -22,6 +23,7 @@ const updates = [];
 
 for (const apiVendor of apiVendors) {
   const vendorId = await getVendorIdOfApiVendor(apiVendor);
+  console.log(apiVendor.vendor, vendorId);
   if (!vendorId) continue;
   updates.push({
     updateOne: {

@@ -5,6 +5,7 @@
   },
   "dependencies": {
     "convert-excel-to-json": "^1.7.0",
+    "dotenv": "^16.3.1",
     "mongodb": "^5.7.0"
   }
 }
